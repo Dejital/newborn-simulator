@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 
-import { Container, Grid, Header, Input, Button } from 'semantic-ui-react';
+import { Container, Grid, Header, Input, Button, Segment } from 'semantic-ui-react';
 
 const style = {
   h1: {
@@ -173,12 +173,16 @@ function App() {
       }
 
       // Parent stamina
-      const staminaDivisor = place === StringConstants.held ? 14 : 18;
-      const staminaLoss = (100/staminaDivisor) * agePerTick;
-      setStamina(Math.max(stamina - staminaLoss, 0));
-      if (stamina === 0) {
-        setPlace(StringConstants.crib);
-        setIsSleeping(true);
+      if (!isSleeping) {
+        const staminaDivisor = place === StringConstants.held ? 14 : 18;
+        const staminaLoss = (100/staminaDivisor) * agePerTick;
+        setStamina(Math.max(stamina - staminaLoss, 0));
+        if (stamina === 0) {
+          setPlace(StringConstants.crib);
+          setIsSleeping(true);
+        }
+      } else {
+        setStamina(Math.min(100, stamina + ((100/6) * agePerTick)));
       }
 
       // Augment breastmilk capacity just a little bit (most should come from baby requirements)
@@ -296,7 +300,7 @@ function AppView(
       <Header style={style.h1} textAlign='left' as='h1'>
         👶 Newborn Sim
         <Header.Subheader>
-          Simulating the parenting process for a newborn baby.
+          Simulating the parenting process for a newborn baby. Built over paternity leave by <a href='https://snevsky.com'>Serge Nevsky</a>.
         </Header.Subheader>
         <br />
       </Header>
