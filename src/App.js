@@ -9,10 +9,12 @@ const style = {
     paddingTop: '3em'
   },
   input: {
-    marginBottom: '0.5em'
+    marginBottom: '0.5em',
+    overflow: 'hidden',
+    width: '100%'
   },
   button: {
-    marginBottom: '0em'
+    marginBottom: '0.5em'
   }
 };
 
@@ -72,6 +74,7 @@ const Analytics = (props) => (
     <Header as='h3'>History</Header>
     <p>🥛Ounces fed: {(Math.round(props.analytics.ouncesFed * 100) / 100)}</p>
     <p>🗑️Diapers changed: {props.analytics.diapersChanged}</p>
+    <p>⚖️️Weight gained: {Math.round(props.analytics.weight * 100) / 100} oz</p>
   </Container>
 );
 
@@ -104,14 +107,10 @@ function getRandomInt(max) {
 }
 
 // TODO: Stamina doesn't seem to go up when you're sleeping
-// TODO: Weight needs to go up realistically
 // TODO: Over feeding should have some consequence
 // TODO: Need some indicator of how full/empty breasts are
-// TODO: Weight needs to go down if not fed
 // TODO: You need a Game Over screen with Score
-// TODO: Keep track of weight gained in Stats
 // TODO: Add an About page/modal and link back to my site
-// TODO: Build the app and deploy via Github
 
 function App() {
   const agePerTick = 0.2; // Essentially the "game speed"
@@ -131,7 +130,7 @@ function App() {
   const [isSleeping, setIsSleeping] = useState(false);
 
   // TODO: Refactor this to useReducer, because it's a complex object
-  const [analytics, setAnalytics] = useState({ ouncesFed: 0, diapersChanged: 0 });
+  const [analytics, setAnalytics] = useState({ ouncesFed: 0, diapersChanged: 0, weight: 0 });
 
   useEffect(() => {
     let timeout = setTimeout(() => {
@@ -184,6 +183,16 @@ function App() {
 
       // Augment breastmilk capacity just a little bit (most should come from baby requirements)
       setBreastmilkCapacity(breastmilkCapacity * 1.01);
+
+      // Gain weight
+      let weightGained = 1.1/(24/agePerTick);
+      if (hunger > 90) {
+        weightGained = -1 * weightGained/2;
+      } else if (hunger > 70) {
+        weightGained = 0;
+      }
+      setWeight(weight + weightGained);
+      setAnalytics({ ...analytics, weight: weightGained });
     }, 1000);
 
     return () => clearTimeout(timeout);
@@ -193,7 +202,6 @@ function App() {
     setIsBreastFeeding(true);
     const ouncesFed = breastmilk; // TODO: Determine with formula
     setTimeout(() => {
-      setWeight(weight + ouncesFed);
       setBreastmilk(breastmilk - ouncesFed);
       setAnalytics({ ...analytics, ouncesFed: analytics.ouncesFed + ouncesFed });
       setBreastmilkCapacity(breastmilkCapacity * 1.05);
@@ -209,7 +217,6 @@ function App() {
     setIsBottleFeeding(true);
     const ouncesFed = 1;
     setTimeout(() => {
-      setWeight(weight + ouncesFed);
       setAnalytics({ ...analytics, ouncesFed: analytics.ouncesFed + ouncesFed });
       setIsBottleFeeding(false);
       setMood(Math.min(mood + 25, 100));
@@ -294,13 +301,16 @@ function AppView(
         <br />
       </Header>
 
-      <Grid columns={3}>
+      <Grid columns={3} stackable>
         <Grid.Column>
-          <Header as='h3'>Baby</Header>
+          <Header as='h3'>Status</Header>
+          <Header as='h4'>Baby</Header>
           <Input style={style.input} label={mood <= 25 ? { content: 'Feeling', color: 'red' } : { content: 'Feeling' }} value={GetMoodDisplay(mood)} error={mood <= 25} />
+          <br />
           <Weight weight={weight} />
+          <br />
           <Age hours={age} />
-          <Header as='h3'>Parent</Header>
+          <Header as='h4'>Parent</Header>
           <Stamina stamina={stamina} />
         </Grid.Column>
 
