@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PropTypes from 'prop-types';
 
-import { Container, Grid, Header, Input, Button, Segment } from 'semantic-ui-react';
+import { Container, Grid, Header, Input, Button, Dimmer } from 'semantic-ui-react';
 
 const style = {
   h1: {
@@ -128,6 +128,7 @@ function App() {
   const [hunger, setHunger] = useState(10);
   const [stamina, setStamina] = useState(80);
   const [isSleeping, setIsSleeping] = useState(false);
+  const [failTimer, setFailTimer] = useState(0);
 
   // TODO: Refactor this to useReducer, because it's a complex object
   const [analytics, setAnalytics] = useState({ ouncesFed: 0, diapersChanged: 0, weight: 0 });
@@ -197,6 +198,19 @@ function App() {
       }
       setWeight(weight + weightGained);
       setAnalytics({ ...analytics, weight: weightGained });
+
+      // Update fail timer
+      if (mood <= 0 && hunger >= 100 && diaperFullness >= 100) {
+        if (failTimer > 30) {
+          // Game over!
+          setFailTimer(-1);
+          console.log('fail');
+        } else if (failTimer >= 0) {
+          setFailTimer(failTimer + 1);
+        }
+      } else if (failTimer > 0) {
+        setFailTimer(0);
+      }
     }, 1000);
 
     return () => clearTimeout(timeout);
@@ -267,6 +281,7 @@ function App() {
         isBottleFeeding={isBottleFeeding}
         isChangingDiaper={isChangingDiaper}
         isSleeping={isSleeping}
+        isGameOver={failTimer < 0}
       />
     </div>
   );
@@ -293,10 +308,12 @@ function AppView(
     isBreastFeeding,
     isBottleFeeding,
     isChangingDiaper,
-    isSleeping
+    isSleeping,
+    isGameOver
    }) {
   return (
     <Container>
+
       <Header style={style.h1} textAlign='left' as='h1'>
         👶 Newborn Sim
         <Header.Subheader>
@@ -304,6 +321,15 @@ function AppView(
         </Header.Subheader>
         <br />
       </Header>
+
+      <Dimmer.Dimmable as={Container} dimmed={isGameOver}>
+
+      <Dimmer active={isGameOver}>
+        <Header as='h2' inverted>
+          Game Over
+        </Header>
+        <Button inverted onClick={() => window.location.reload(false)}>Retry</Button>
+      </Dimmer>
 
       <Grid columns={3} stackable>
         <Grid.Column>
@@ -350,6 +376,7 @@ function AppView(
           </Container>
         </Grid.Column>
       </Grid>
+    </Dimmer.Dimmable>
     </Container>
   );
 }
@@ -376,7 +403,8 @@ AppView.propTypes = {
   isBreastFeeding: PropTypes.bool,
   isBottleFeeding: PropTypes.bool,
   isChangingDiaper: PropTypes.bool,
-  isSleeping: PropTypes.bool
+  isSleeping: PropTypes.bool,
+  isGameOver: PropTypes.bool
 };
 
 export default App;
