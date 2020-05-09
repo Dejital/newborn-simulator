@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/newborn-simulator/static/css/main.27fd15f6.chunk.css",
-    "main.js": "/newborn-simulator/static/js/main.4f520cbb.chunk.js",
-    "main.js.map": "/newborn-simulator/static/js/main.4f520cbb.chunk.js.map",
+    "main.js": "/newborn-simulator/static/js/main.115b539a.chunk.js",
+    "main.js.map": "/newborn-simulator/static/js/main.115b539a.chunk.js.map",
     "runtime-main.js": "/newborn-simulator/static/js/runtime-main.89cb5365.js",
     "runtime-main.js.map": "/newborn-simulator/static/js/runtime-main.89cb5365.js.map",
-    "static/js/2.fc317384.chunk.js": "/newborn-simulator/static/js/2.fc317384.chunk.js",
-    "static/js/2.fc317384.chunk.js.map": "/newborn-simulator/static/js/2.fc317384.chunk.js.map",
+    "static/js/2.b0b190e7.chunk.js": "/newborn-simulator/static/js/2.b0b190e7.chunk.js",
+    "static/js/2.b0b190e7.chunk.js.map": "/newborn-simulator/static/js/2.b0b190e7.chunk.js.map",
     "index.html": "/newborn-simulator/index.html",
-    "precache-manifest.bdb253ae9a2d8b3f1290ff859cf12159.js": "/newborn-simulator/precache-manifest.bdb253ae9a2d8b3f1290ff859cf12159.js",
+    "precache-manifest.e40f99a4f15a388cd1604497209d1e5c.js": "/newborn-simulator/precache-manifest.e40f99a4f15a388cd1604497209d1e5c.js",
     "service-worker.js": "/newborn-simulator/service-worker.js",
     "static/css/main.27fd15f6.chunk.css.map": "/newborn-simulator/static/css/main.27fd15f6.chunk.css.map",
-    "static/js/2.fc317384.chunk.js.LICENSE.txt": "/newborn-simulator/static/js/2.fc317384.chunk.js.LICENSE.txt"
+    "static/js/2.b0b190e7.chunk.js.LICENSE.txt": "/newborn-simulator/static/js/2.b0b190e7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.89cb5365.js",
-    "static/js/2.fc317384.chunk.js",
+    "static/js/2.b0b190e7.chunk.js",
     "static/css/main.27fd15f6.chunk.css",
-    "static/js/main.4f520cbb.chunk.js"
+    "static/js/main.115b539a.chunk.js"
   ]
 }
