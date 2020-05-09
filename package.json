@@ -1,7 +1,7 @@
 {
   "name": "newborn-parent",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "http://snevsky.com/newborn-simulator",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
