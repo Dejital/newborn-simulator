@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/newborn-simulator/precache-manifest.b06e4f68c067c0e11e7fed04d3fed0ce.js"
+  "/newborn-simulator/precache-manifest.126517a2e34736f46ef556d11cc63cb8.js"
 );
 
 self.addEventListener('message', (event) => {

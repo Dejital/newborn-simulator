@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "97b1083797715a8c6085b3f65721da48",
+    "revision": "c3171337820a49776d09e7eb8cfde127",
     "url": "/newborn-simulator/index.html"
   },
   {
-    "revision": "1f4cd83c10d54fbf762d",
+    "revision": "eff3572626ddb463e726",
     "url": "/newborn-simulator/static/css/main.27fd15f6.chunk.css"
   },
   {
-    "revision": "062a5d6e051aa3366f56",
-    "url": "/newborn-simulator/static/js/2.b0b190e7.chunk.js"
+    "revision": "068b7767d92883f2b27d",
+    "url": "/newborn-simulator/static/js/2.a4f7d1c4.chunk.js"
   },
   {
     "revision": "4d47ffde3dc69784e8e23fd910817ef8",
-    "url": "/newborn-simulator/static/js/2.b0b190e7.chunk.js.LICENSE.txt"
+    "url": "/newborn-simulator/static/js/2.a4f7d1c4.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "1f4cd83c10d54fbf762d",
-    "url": "/newborn-simulator/static/js/main.85752dbc.chunk.js"
+    "revision": "eff3572626ddb463e726",
+    "url": "/newborn-simulator/static/js/main.48e4af46.chunk.js"
   },
   {
     "revision": "746d27a611d50cb26d57",
