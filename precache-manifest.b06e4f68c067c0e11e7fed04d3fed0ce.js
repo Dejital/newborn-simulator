@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1195b5a56874db1ecc3b7d12a5f28237",
+    "revision": "97b1083797715a8c6085b3f65721da48",
     "url": "/newborn-simulator/index.html"
   },
   {
