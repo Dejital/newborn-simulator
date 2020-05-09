@@ -103,6 +103,16 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+// TODO: Stamina doesn't seem to go up when you're sleeping
+// TODO: Weight needs to go up realistically
+// TODO: Over feeding should have some consequence
+// TODO: Need some indicator of how full/empty breasts are
+// TODO: Weight needs to go down if not fed
+// TODO: You need a Game Over screen with Score
+// TODO: Keep track of weight gained in Stats
+// TODO: Add an About page/modal and link back to my site
+// TODO: Build the app and deploy via Github
+
 function App() {
   const agePerTick = 0.2; // Essentially the "game speed"
 
