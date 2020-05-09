@@ -17,7 +17,7 @@ const style = {
 };
 
 const Weight = (props) => (
-  <Input style={style.input} label='Weight' value={`${(Math.round(props.weight * 100) / 100)} oz`} />
+  <Input style={style.input} label='Weight' value={`${(Math.round(props.weight * 10) / 10)} oz`} />
 );
 
 const Age = (props) => (
@@ -27,6 +27,19 @@ const Age = (props) => (
 const Place = (props) => (
   <Input style={style.input} label='Place' value={props.place} />
 );
+
+const Stamina = (props) => (
+  <Input style={style.input} label='Stamina' value={GetStaminaDisplay(props.stamina)} />
+);
+
+function GetStaminaDisplay(stamina) {
+  if (stamina > 30) {
+    return 'Active';
+  } else if (stamina > 10) {
+    return 'Growing tired';
+  }
+  return 'Exhausted';
+}
 
 function GetPoopinessColor(diaperFullness) {
   if (diaperFullness > 70) {
@@ -50,8 +63,8 @@ const ChangeDiaper = (props) => (
   </Button>
 );
 
-const Feeling = (props) => (
-  <Input style={style.input} label='Feeling' value={props.feeling} />
+const Sleep = (props) => (
+  <Button style={style.button} disabled={props.disabled} onClick={props.onClick}>⏰{props.isSleeping ? 'Wake' : 'Sleep'}</Button>
 );
 
 const Analytics = (props) => (
@@ -104,6 +117,8 @@ function App() {
   const [mood, setMood] = useState(70);
   const [diaperFullness, setDiaperFullness] = useState(0);
   const [hunger, setHunger] = useState(10);
+  const [stamina, setStamina] = useState(80);
+  const [isSleeping, setIsSleeping] = useState(false);
 
   // TODO: Refactor this to useReducer, because it's a complex object
   const [analytics, setAnalytics] = useState({ ouncesFed: 0, diapersChanged: 0 });
@@ -148,6 +163,15 @@ function App() {
         setHunger(Math.min(100, hunger + 5));
       }
 
+      // Parent stamina
+      const staminaDivisor = place === StringConstants.held ? 14 : 18;
+      const staminaLoss = (100/staminaDivisor) * agePerTick;
+      setStamina(Math.max(stamina - staminaLoss, 0));
+      if (stamina === 0) {
+        setPlace(StringConstants.crib);
+        setIsSleeping(true);
+      }
+
       // Augment breastmilk capacity just a little bit (most should come from baby requirements)
       setBreastmilkCapacity(breastmilkCapacity * 1.01);
     }, 1000);
@@ -166,6 +190,7 @@ function App() {
       setMood(Math.min(mood + 25, 100));
       setHunger(0);
       setIsBreastFeeding(false);
+      setStamina(stamina - 1);
     }, 2000);
   };
 
@@ -179,6 +204,7 @@ function App() {
       setIsBottleFeeding(false);
       setMood(Math.min(mood + 25, 100));
       setHunger(0);
+      setStamina(stamina - 1);
     }, 2000);
   };
 
@@ -187,9 +213,14 @@ function App() {
     setTimeout(() => {
       setAnalytics({ ...analytics, diapersChanged: analytics.diapersChanged + 1 });
       setDiaperFullness(0);
-      setMood(Math.min(mood + 25, 100));
+      setMood(Math.min(mood + (diaperFullness/4), 100));
       setIsChangingDiaper(false);
+      setStamina(stamina - 1);
     }, 2000);
+  };
+
+  const onSleep = () => {
+    setIsSleeping(!isSleeping);
   };
 
   return (
@@ -202,16 +233,19 @@ function App() {
         mood={mood}
         diaperFullness={diaperFullness}
         hunger={hunger}
+        stamina={stamina}
 
         onBreastFeed={() => onBreastFeed()}
         onBottleFeed={() => onBottleFeed()}
         onChangeDiaper={() => onChangeDiaper()}
         onHoldBaby={() => setPlace(StringConstants.held)}
         onCrib={() => setPlace(StringConstants.crib)}
+        onSleep={() => onSleep()}
 
         isBreastFeeding={isBreastFeeding}
         isBottleFeeding={isBottleFeeding}
         isChangingDiaper={isChangingDiaper}
+        isSleeping={isSleeping}
       />
     </div>
   );
@@ -226,57 +260,65 @@ function AppView(
     mood,
     diaperFullness,
     hunger,
+    stamina,
 
     onBreastFeed,
     onBottleFeed,
     onHoldBaby,
     onCrib,
     onChangeDiaper,
+    onSleep,
 
     isBreastFeeding,
     isBottleFeeding,
-    isChangingDiaper
+    isChangingDiaper,
+    isSleeping
    }) {
   return (
     <Container>
       <Header style={style.h1} textAlign='left' as='h1'>
-        Newborn Sim
+        👶 Newborn Sim
         <Header.Subheader>
           Simulating the parenting process for a newborn baby.
         </Header.Subheader>
+        <br />
       </Header>
 
       <Grid columns={3}>
         <Grid.Column>
-          <Header as='h3'>Status</Header>
-          <Feeling feeling={GetMoodDisplay(mood)} />
-          <Place place={place} />
+          <Header as='h3'>Baby</Header>
+          <Input style={style.input} label={mood <= 25 ? { content: 'Feeling', color: 'red' } : { content: 'Feeling' }} value={GetMoodDisplay(mood)} error={mood <= 25} />
           <Weight weight={weight} />
           <Age hours={age} />
+          <Header as='h3'>Parent</Header>
+          <Stamina stamina={stamina} />
         </Grid.Column>
 
         <Grid.Column>
           <Header as='h3'>Actions</Header>
           <Header as='h4'>Feeding</Header>
-          <Button style={style.button} onClick={onBreastFeed} loading={isBreastFeeding} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper}>
+          <Button style={style.button} onClick={onBreastFeed} loading={isBreastFeeding} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper || isSleeping || stamina === 0}>
             🤱Breast Feed
           </Button>
-          <Button style={style.button} onClick={onBottleFeed} loading={isBottleFeeding} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper}>
+          <Button style={style.button} onClick={onBottleFeed} loading={isBottleFeeding} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper || isSleeping || stamina === 0}>
             🍼Bottle Feed
           </Button>
           <br />
           <Header as='h4'>Diapers</Header>
-          <ChangeDiaper onClick={onChangeDiaper} loading={isChangingDiaper} diaperFullness={diaperFullness} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper} />
+          <ChangeDiaper onClick={onChangeDiaper} loading={isChangingDiaper} diaperFullness={diaperFullness} disabled={isBreastFeeding || isBottleFeeding || isChangingDiaper || isSleeping || stamina === 0} />
           <br />
           <Header as='h4'>Placement</Header>
-          <Button onClick={onHoldBaby}>👶Hold Baby</Button>
-          <Button onClick={onCrib}>{StringConstants.crib}</Button>
+          <Button onClick={onHoldBaby} attached='left' toggle active={place == StringConstants.held} disabled={isSleeping || stamina === 0}>👶Hold Baby</Button>
+          <Button onClick={onCrib} attached='right' toggle active={place == StringConstants.crib} disabled={isSleeping || stamina === 0}>{StringConstants.crib}</Button>
+          <br />
+          <Header as='h4'>Parent</Header>
+          <Sleep onClick={onSleep} isSleeping={isSleeping} disabled={place === StringConstants.held} />
         </Grid.Column>
 
         <Grid.Column>
           <Analytics analytics={analytics} />
           <br />
-          <Container>
+          <Container style={{ display: 'none' }}>
             <Header as='h3'>Debug</Header>
             <p>Mood: {mood}</p>
             <p>Diaper: {diaperFullness}</p>
@@ -299,15 +341,18 @@ AppView.propTypes = {
   mood: PropTypes.number,
   diaperFullness: PropTypes.number,
   hunger: PropTypes.number,
+  stamina: PropTypes.number,
 
   onBreastFeed: PropTypes.func,
   onBottleFeed: PropTypes.func,
   onHoldBaby: PropTypes.func,
   onCrib: PropTypes.func,
+  onSleep: PropTypes.func,
 
   isBreastFeeding: PropTypes.bool,
   isBottleFeeding: PropTypes.bool,
   isChangingDiaper: PropTypes.bool,
+  isSleeping: PropTypes.bool
 };
 
 export default App;
